@@ -1,20 +1,36 @@
 // import models
 const Product = require('./Product');
-const Category = require('./Category');
-const Tag = require('./Tag');
-const ProductTag = require('./ProductTag');
+ const Category = require('./Category');
+ const Tag = require('./Tag');
+ const ProductTag = require('./ProductTag');
+ const sequelize = require('sequelize');
 
-// Products belongsTo Category
+ // Products belongsTo Category
+ sequelize.product.belongsToMany(sequelize.category, {
+   foreignKey: 'category_id',
+ });
 
-// Categories have many Products
+ // Categories have many Products
+ sequelize.category.hasMany(sequelize.product, {
+   foreignKey: 'category_id',
+   onDelete: 'CASCADE',
+ });
 
-// Products belongToMany Tags (through ProductTag)
+ // Products belongToMany Tags (through ProductTag)
+ sequelize.product.belongsToMany(sequelize.tag, {
+   through: sequelize.product_tag,
+   foreignKey: 'product_id',
+ });
 
-// Tags belongToMany Products (through ProductTag)
+ // Tags belongToMany Products (through ProductTag)
+ sequelize.tag.belongsToMany(sequelize.product, {
+   through: sequelize.product_tag,
+   foreignKey: 'tag_id',
+ });
 
-module.exports = {
-  Product,
+ module.exports = {
+   Product,
   Category,
   Tag,
   ProductTag,
-};
+ };
